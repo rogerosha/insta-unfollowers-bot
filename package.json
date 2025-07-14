@@ -1,0 +1,23 @@
+{
+  "name": "insta-unfollowers-bot",
+  "version": "1.0.0",
+  "description": "🧐 a simple bot for personal use to check unfollowers without using any third-party apps",
+  "main": "insta_check.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rogerosha/insta-unfollowers-bot.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rogerosha/insta-unfollowers-bot/issues"
+  },
+  "homepage": "https://github.com/rogerosha/insta-unfollowers-bot#readme",
+  "dependencies": {
+    "instagram-private-api": "^1.46.1"
+  }
+}
