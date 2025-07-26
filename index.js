@@ -21,29 +21,39 @@ bot.on('message', async (msg) => {
   }
 
   try {
-    bot.sendMessage(chatId, `🔍 Checking Instagram account "${text}"...`);
+    bot.sendMessage(chatId, `Checking Instagram account "${text}"...`);
 
     const user = await ig.user.searchExact(text);
 
     const followersFeed = ig.feed.accountFollowers(user.pk);
-    const followersItems = await followersFeed.items();
-    const followers = new Set(followersItems.map((u) => u.pk));
+    const followersMap = new Map();
+    do {
+      const items = await followersFeed.items();
+      items.forEach((u) => followersMap.set(u.pk, u.username));
+    } while (followersFeed.isMoreAvailable());
 
     const followingFeed = ig.feed.accountFollowing(user.pk);
-    const followingItems = await followingFeed.items();
-    const following = new Set(followingItems.map((u) => u.pk));
+    const followingMap = new Map();
+    do {
+      const items = await followingFeed.items();
+      items.forEach((u) => followingMap.set(u.pk, u.username));
+    } while (followingFeed.isMoreAvailable());
 
     const notFollowedBack = [];
-    for (const user of followingItems) {
-      if (!followers.has(user.pk)) {
-        notFollowedBack.push(user.username);
+    const mutual = [];
+
+    for (const [pk, username] of followingMap) {
+      if (followersMap.has(pk)) {
+        mutual.push(username);
+      } else {
+        notFollowedBack.push(username);
       }
     }
 
     bot.sendMessage(
       chatId,
       `Stats for @${text}:\n` +
-        `✅ Mutual followers: ${following.size - notFollowedBack.length}\n` +
+        `✅ Mutual followers: ${mutual.length}\n` +
         `❌ Not following back: ${notFollowedBack.length}\n\n` +
         (notFollowedBack.slice(0, 10).join('\n') || '—')
     );
